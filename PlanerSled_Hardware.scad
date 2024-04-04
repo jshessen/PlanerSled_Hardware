@@ -6,7 +6,7 @@
         
         https://github.com/jshessen/PlanerSled_Hardware
         
-        Parametric OpenSCAD file in support of the "Spring Factory 1.2"
+        Parametric OpenSCAD file in support of
         "How To Build a Planer Sled" by My Garage Woodshop
         https://www.youtube.com/watch?v=DNg9BV4IF2Q
 &&
