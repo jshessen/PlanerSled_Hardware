@@ -34,17 +34,19 @@ You should have received a copy of the GNU General Public License along with thi
         The Customizer feature provides a graphic user interface for editing model parameters.
 ??
 ???????????????????????????????????????????????????????*/
-/* [Global] */
-// Display Verbose Output?
-$VERBOSE=1; // [0:No,1:Level=1,2:Level=2,3:Developer]
-
 /* [Design Characteristics] */
-// Bolt Hole
-custom_bolthole=0.3125; // [0.0625:0.0001:1]
+// Bolt Hole Diameter (d3)
+custom_bolthole=0.31496063; // [0.0625:0.0001:1]
 // Enable Set Screw Hole
 enable_setscrew=1;      // [1:Yes,0:No]
 // Bolt Insert Type
 bolt_insert=0;          // [1:Tee Nut,0:Heat Set Insert]
+/* [Set Screw: Heat Set Insert] */
+// Heat Set Length (l)
+custom_heatset_l=0.5;           // [0.030:0.001:13]
+// Heat Set Relief (r)
+custom_heatset_relief=0.039370079; //  [0.030:0.001:0.05]
+/* [Set Screw: Tee Nut] */
 // Tee Nut Recess (ingnored for Heat Set Insert)
 custom_teenut_recess=0.3333;    // [0.0625:0.0001:1]
 // Tee Nut Diameter (ingnored for Heat Set Insert)
@@ -63,6 +65,9 @@ custom_slideblock_h=1.25;       // [0.500:0.001:5]
 custom_rabbet_d=0.25;           // [0.0625:0.0001:5]
 // Rabbet Height
 custom_rabbet_h=0.5;            // [0.0625:0.0001:5]
+// Stopped Hole Limit
+custom_stopped_hole_gap=0.3125; // [0.0625:0.0001:1]
+
 
 /* [Base Plate Template] */
 // Enabled
@@ -103,6 +108,8 @@ $eps = 1/80;
 render_offset=1.25;
 
 bolthole_d=in2mm(custom_bolthole);
+heatset_l=in2mm(custom_heatset_l);
+heatset_relief=in2mm(custom_heatset_relief);
 teenut_recess=in2mm(custom_teenut_recess);
 teenut_d=in2mm(custom_teenut_d);
 
@@ -113,10 +120,8 @@ rabbet_d=in2mm(custom_rabbet_d);
 rabbet_h=in2mm(custom_rabbet_h);
 setscrew_x_offset=slideblock_w/2-in2mm(1+1/16);
 setscrew_z_offset=in2mm(1/5);
-stopped_hole_gap=in2mm(1/8);
+stopped_hole_gap=in2mm(custom_stopped_hole_gap);
 stopped_hole_y_offset=slideblock_d/2;
-
-hard_wedge=0.5;
 
 baseplate_w=in2mm(custom_baseplate_w);
 baseplate_d=in2mm(custom_baseplate_d);
@@ -158,7 +163,7 @@ module make_PlanerSled_Hardware(){
                     cube([slideblock_w+$eps,rabbet_d+$eps,rabbet_h+$eps], center=true);
                 // Top Hole
                 translate([0,0,stopped_hole_gap])
-                    cylinder(h=slideblock_h,d1=bolthole_d*hard_wedge,d2=bolthole_d, center=true, $fn=fn);
+                    cylinder(h=slideblock_h,d=bolthole_d, center=true, $fn=fn);
                 if(enable_setscrew){
                     // Side Hole
                     translate([setscrew_x_offset,0,-setscrew_z_offset]) rotate([-90,0,0]) {
