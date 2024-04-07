@@ -90,6 +90,17 @@ custom_handwheel_d=2;           // [.500:.001:3.00]
 custom_handwheel_h=.5;          // [.100:.001:3.00]
 // Facet Number
 hw_fn=24;                       // [6:1:360]
+
+/* [Stop Block] */
+// Enabled
+display_stop=1;            // [1:Yes,0:No]
+// Width
+custom_stop_w=8;           // [0.500:0.01:10]
+// Depth
+custom_stop_d=1;           // [0.500:0.001:5]
+// Height
+custom_stop_h=0.25;        // [0.500:0.001:5]
+
 /*
 ?????????????????????????????????????????????????????????????????*/
 
@@ -130,6 +141,10 @@ baseplate_hole=in2mm(custom_baseplate_hole);
 
 handwheel_d=in2mm(custom_handwheel_d);
 handwheel_h=in2mm(custom_handwheel_h);
+
+stop_w=in2mm(custom_stop_w);
+stop_d=in2mm(custom_stop_d);
+stop_h=in2mm(custom_stop_h);
 /*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
@@ -243,6 +258,29 @@ module make_PlanerSled_Hardware(){
                 if(bolt_insert){
                     translate([0,0,(handwheel_h-teenut_recess)/2])
                         cylinder(h=(teenut_recess+$eps),d=(teenut_d+$eps),center=true,$fn=fn);
+                }
+            }
+        }
+    }
+    if(display_stop){
+        shift_y=($preview) ?
+                slideblock_d*render_offset :
+                slideblock_d*render_offset;
+        translate([0,shift_y,stop_h/2]){
+            difference(){
+                color("orange")
+                cube([stop_w,stop_d,stop_h],center=true);
+                // Stop holes
+                union(){
+                    translate([0,-stop_d/5,stop_h/2]){
+                        cylinder(h=stop_h+$eps,d=baseplate_hole,center=true,$fn=fn);
+                        translate([-stop_w/3,0,0]){
+                            cylinder(h=stop_h+$eps,d=baseplate_hole,center=true,$fn=fn);
+                        }
+                        translate([stop_w/3,0,0]){
+                            cylinder(h=baseplate_h+$eps,d=baseplate_hole,center=true,$fn=fn);
+                        }
+                    }
                 }
             }
         }
